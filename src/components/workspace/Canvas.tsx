@@ -44,6 +44,17 @@ export default function Canvas() {
     updateElement(elementId, newAttrs);
   };
 
+  const handleStageClick = (e: any) => {
+    // Deselect if clicking on empty space
+    if (e.target === e.target.getStage()) {
+      selectElement(null);
+    }
+  };
+
+  const handleElementClick = (element: any) => {
+    selectElement(element);
+  };
+
   const handleZoomIn = () => {
     setZoom(prev => Math.min(prev + 0.1, 3));
   };
@@ -150,6 +161,117 @@ export default function Canvas() {
           />
         );
       
+      case 'triangle':
+        return (
+          <Group
+            key={element.id}
+            x={element.x}
+            y={element.y}
+            draggable
+            onDragEnd={(e) => handleDragEnd(e, element.id)}
+            onClick={() => selectElement(element)}
+            onTap={() => selectElement(element)}
+          >
+            <Rect
+              width={element.width}
+              height={element.height}
+              fill={element.styles.backgroundColor || '#f59e0b'}
+              stroke={isSelected ? '#3b82f6' : 'transparent'}
+              strokeWidth={isSelected ? 2 : 0}
+              clipFunc={(ctx) => {
+                ctx.moveTo(element.width / 2, 0);
+                ctx.lineTo(element.width, element.height);
+                ctx.lineTo(0, element.height);
+                ctx.closePath();
+              }}
+            />
+          </Group>
+        );
+      
+      case 'star':
+        return (
+          <Group
+            key={element.id}
+            x={element.x}
+            y={element.y}
+            draggable
+            onDragEnd={(e) => handleDragEnd(e, element.id)}
+            onClick={() => selectElement(element)}
+            onTap={() => selectElement(element)}
+          >
+            <Rect
+              width={element.width}
+              height={element.height}
+              fill={element.styles.backgroundColor || '#eab308'}
+              stroke={isSelected ? '#3b82f6' : 'transparent'}
+              strokeWidth={isSelected ? 2 : 0}
+            />
+          </Group>
+        );
+      
+      case 'heart':
+        return (
+          <Group
+            key={element.id}
+            x={element.x}
+            y={element.y}
+            draggable
+            onDragEnd={(e) => handleDragEnd(e, element.id)}
+            onClick={() => selectElement(element)}
+            onTap={() => selectElement(element)}
+          >
+            <Rect
+              width={element.width}
+              height={element.height}
+              fill={element.styles.backgroundColor || '#ef4444'}
+              stroke={isSelected ? '#3b82f6' : 'transparent'}
+              strokeWidth={isSelected ? 2 : 0}
+              cornerRadius={element.width / 4}
+            />
+          </Group>
+        );
+      
+      case 'hexagon':
+        return (
+          <Group
+            key={element.id}
+            x={element.x}
+            y={element.y}
+            draggable
+            onDragEnd={(e) => handleDragEnd(e, element.id)}
+            onClick={() => selectElement(element)}
+            onTap={() => selectElement(element)}
+          >
+            <Rect
+              width={element.width}
+              height={element.height}
+              fill={element.styles.backgroundColor || '#8b5cf6'}
+              stroke={isSelected ? '#3b82f6' : 'transparent'}
+              strokeWidth={isSelected ? 2 : 0}
+            />
+          </Group>
+        );
+      
+      case 'container':
+        return (
+          <Rect
+            key={element.id}
+            x={element.x}
+            y={element.y}
+            width={element.width}
+            height={element.height}
+            fill={element.styles.backgroundColor || 'transparent'}
+            stroke={element.styles.border ? '#d1d5db' : (isSelected ? '#3b82f6' : '#e5e7eb')}
+            strokeWidth={2}
+            dash={element.styles.border?.includes('dashed') ? [5, 5] : undefined}
+            cornerRadius={element.styles.borderRadius || 0}
+            draggable
+            onDragEnd={(e) => handleDragEnd(e, element.id)}
+            onClick={() => selectElement(element)}
+            onTap={() => selectElement(element)}
+          />
+        );
+      
       default:
         return (
           <Rect
@@ -243,12 +365,7 @@ export default function Canvas() {
             height={canvasSize.height * zoom}
             scaleX={zoom}
             scaleY={zoom}
-            onClick={(e) => {
-              // Deselect if clicking on empty space
-              if (e.target === e.target.getStage()) {
-                selectElement(null);
-              }
-            }}
+            onClick={handleStageClick}
           >
             <Layer>
               {/* Grid */}
